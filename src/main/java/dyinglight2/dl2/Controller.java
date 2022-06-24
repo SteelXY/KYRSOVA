@@ -19,11 +19,9 @@ import dyinglight2.dl2.microobjects.zombies.Volatile;
 import dyinglight2.dl2.microobjects.zombies.Zombie;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Text;
-import javafx.scene.input.KeyEvent;
 
 public class Controller {
 
@@ -148,9 +146,6 @@ public class Controller {
     private Text volatilesText2;
 
     @FXML
-    private DialogPane window;
-
-    @FXML
     private RadioButton waterstationRadio;
 
     @FXML
@@ -162,10 +157,6 @@ public class Controller {
     @FXML
     private Text zombiesText2;
 
-    @FXML
-    void F3(KeyEvent event) throws InterruptedException {
-window.getContent();
-    }
 
     @FXML
     void initialize() {
@@ -175,6 +166,36 @@ window.getContent();
         Peacekeepers peacekeepers = new Peacekeepers(peacekeepersUnits);
         WaterStation waterStation = new WaterStation(waterstationUnits);
         Survivors survivors = new Survivors(survivalsUnits);
+
+        soldiersText.setText(String.valueOf(peacekeepers.getAmountOf("Soldier")));
+        commandersText.setText(String.valueOf(peacekeepers.getAmountOf("Commander")));
+        generalsText.setText(String.valueOf(peacekeepers.getAmountOf("General")));
+        zombiesText.setText(String.valueOf(peacekeepers.getAmountOf("Zombie")));
+        golliwogsText.setText(String.valueOf(peacekeepers.getAmountOf("Golliwog")));
+        volatilesText.setText(String.valueOf(peacekeepers.getAmountOf("Volatile")));
+        fightersText.setText(String.valueOf(peacekeepers.getAmountOf("Fighter")));
+        sheriffsText.setText(String.valueOf(peacekeepers.getAmountOf("Sheriff")));
+        chiefsText.setText(String.valueOf(peacekeepers.getAmountOf("Chief")));
+
+        soldiersText1.setText(String.valueOf(waterStation.getAmountOf("Soldier")));
+        commandersText1.setText(String.valueOf(waterStation.getAmountOf("Commander")));
+        generalsText1.setText(String.valueOf(waterStation.getAmountOf("General")));
+        zombiesText1.setText(String.valueOf(waterStation.getAmountOf("Zombie")));
+        golliwogsText1.setText(String.valueOf(waterStation.getAmountOf("Golliwog")));
+        volatilesText1.setText(String.valueOf(waterStation.getAmountOf("Volatile")));
+        fightersText1.setText(String.valueOf(waterStation.getAmountOf("Fighter")));
+        sheriffsText1.setText(String.valueOf(waterStation.getAmountOf("Sheriff")));
+        chiefsText1.setText(String.valueOf(waterStation.getAmountOf("Chief")));
+
+        soldiersText2.setText(String.valueOf(survivors.getAmountOf("Soldier")));
+        commandersText2.setText(String.valueOf(survivors.getAmountOf("Commander")));
+        generalsText2.setText(String.valueOf(survivors.getAmountOf("General")));
+        zombiesText2.setText(String.valueOf(survivors.getAmountOf("Zombie")));
+        golliwogsText2.setText(String.valueOf(survivors.getAmountOf("Golliwog")));
+        volatilesText2.setText(String.valueOf(survivors.getAmountOf("Volatile")));
+        fightersText2.setText(String.valueOf(survivors.getAmountOf("Fighter")));
+        sheriffsText2.setText(String.valueOf(survivors.getAmountOf("Sheriff")));
+        chiefsText2.setText(String.valueOf(survivors.getAmountOf("Chief")));
 
         addUnit.setOnAction(actionEvent -> {
             if (peacekeepersRadio.isSelected()) {

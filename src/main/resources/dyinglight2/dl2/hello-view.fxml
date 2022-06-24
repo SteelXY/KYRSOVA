@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -32,7 +31,7 @@
       </ImageView>
       <Text layoutX="14.0" layoutY="441.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Soldiers:" />
       <Text fx:id="soldiersText" layoutX="65.0" layoutY="441.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <DialogPane fx:id="window" layoutX="296.0" layoutY="213.0" onKeyPressed="#F3" prefHeight="143.0" prefWidth="275.0">
+      <DialogPane fx:id="window" layoutX="14.0" layoutY="14.0" prefHeight="143.0" prefWidth="275.0">
          <graphic>
             <GridPane>
                <columnConstraints>
@@ -72,9 +71,6 @@
                </children>
             </GridPane>
          </graphic>
-         <buttonTypes>
-            <ButtonType fx:constant="CANCEL" />
-         </buttonTypes>
       </DialogPane>
       <Text layoutX="14.0" layoutY="464.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Commanders:" />
       <Text layoutX="14.0" layoutY="488.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generals:" />
