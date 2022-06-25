@@ -27,6 +27,10 @@ public class Peacekeepers {
         units.add(b);
     }
 
+    public void removeAllUnits() {
+        units.clear();
+    }
+
     @Override
     public String toString() {
         return "Peacekeepers{" +

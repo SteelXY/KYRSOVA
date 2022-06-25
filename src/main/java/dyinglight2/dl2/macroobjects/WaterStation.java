@@ -27,6 +27,10 @@ public class WaterStation {
         units.add(s);
     }
 
+    public void removeAllUnits() {
+        units.clear();
+    }
+
     @Override
     public String toString() {
         return "WaterStation{" +

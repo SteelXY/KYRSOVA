@@ -1,9 +1,8 @@
 package dyinglight2.dl2;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Optional;
 
 import dyinglight2.dl2.macroobjects.Peacekeepers;
 import dyinglight2.dl2.macroobjects.Survivors;
@@ -18,48 +17,16 @@ import dyinglight2.dl2.microobjects.zombies.Golliwog;
 import dyinglight2.dl2.microobjects.zombies.Volatile;
 import dyinglight2.dl2.microobjects.zombies.Zombie;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 public class Controller {
 
     @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
-    @FXML
-    private RadioButton addChief;
-
-    @FXML
-    private RadioButton addCommander;
-
-    @FXML
-    private RadioButton addFighter;
-
-    @FXML
-    private RadioButton addGeneral;
-
-    @FXML
-    private RadioButton addGolliwog;
-
-    @FXML
-    private RadioButton addSheriff;
-
-    @FXML
-    private RadioButton addSoldier;
-
-    @FXML
     private Button addUnit;
-
-    @FXML
-    private RadioButton addVolatile;
-
-    @FXML
-    private RadioButton addZombie;
 
     @FXML
     private Text chiefsText;
@@ -69,6 +36,15 @@ public class Controller {
 
     @FXML
     private Text chiefsText2;
+
+    @FXML
+    private Button clearPeacekeepers;
+
+    @FXML
+    private Button clearSurvivors;
+
+    @FXML
+    private Button clearWaterStation;
 
     @FXML
     private Text commandersText;
@@ -107,15 +83,6 @@ public class Controller {
     private Text golliwogsText2;
 
     @FXML
-    private ToggleGroup group;
-
-    @FXML
-    private ToggleGroup group2;
-
-    @FXML
-    private RadioButton peacekeepersRadio;
-
-    @FXML
     private Text sheriffsText;
 
     @FXML
@@ -134,9 +101,6 @@ public class Controller {
     private Text soldiersText2;
 
     @FXML
-    private RadioButton survivorsRadio;
-
-    @FXML
     private Text volatilesText;
 
     @FXML
@@ -144,9 +108,6 @@ public class Controller {
 
     @FXML
     private Text volatilesText2;
-
-    @FXML
-    private RadioButton waterstationRadio;
 
     @FXML
     private Text zombiesText;
@@ -157,7 +118,6 @@ public class Controller {
     @FXML
     private Text zombiesText2;
 
-
     @FXML
     void initialize() {
         List<Object> peacekeepersUnits = new ArrayList<>();
@@ -167,37 +127,88 @@ public class Controller {
         WaterStation waterStation = new WaterStation(waterstationUnits);
         Survivors survivors = new Survivors(survivalsUnits);
 
-        soldiersText.setText(String.valueOf(peacekeepers.getAmountOf("Soldier")));
-        commandersText.setText(String.valueOf(peacekeepers.getAmountOf("Commander")));
-        generalsText.setText(String.valueOf(peacekeepers.getAmountOf("General")));
-        zombiesText.setText(String.valueOf(peacekeepers.getAmountOf("Zombie")));
-        golliwogsText.setText(String.valueOf(peacekeepers.getAmountOf("Golliwog")));
-        volatilesText.setText(String.valueOf(peacekeepers.getAmountOf("Volatile")));
-        fightersText.setText(String.valueOf(peacekeepers.getAmountOf("Fighter")));
-        sheriffsText.setText(String.valueOf(peacekeepers.getAmountOf("Sheriff")));
-        chiefsText.setText(String.valueOf(peacekeepers.getAmountOf("Chief")));
+        setAmountOfUnitsText(peacekeepers, waterStation, survivors);
 
-        soldiersText1.setText(String.valueOf(waterStation.getAmountOf("Soldier")));
-        commandersText1.setText(String.valueOf(waterStation.getAmountOf("Commander")));
-        generalsText1.setText(String.valueOf(waterStation.getAmountOf("General")));
-        zombiesText1.setText(String.valueOf(waterStation.getAmountOf("Zombie")));
-        golliwogsText1.setText(String.valueOf(waterStation.getAmountOf("Golliwog")));
-        volatilesText1.setText(String.valueOf(waterStation.getAmountOf("Volatile")));
-        fightersText1.setText(String.valueOf(waterStation.getAmountOf("Fighter")));
-        sheriffsText1.setText(String.valueOf(waterStation.getAmountOf("Sheriff")));
-        chiefsText1.setText(String.valueOf(waterStation.getAmountOf("Chief")));
+        clearPeacekeepers.setOnAction(actionEvent -> {
+            peacekeepers.removeAllUnits();
+            setAmountOfUnitsText(peacekeepers, waterStation, survivors);
+        });
 
-        soldiersText2.setText(String.valueOf(survivors.getAmountOf("Soldier")));
-        commandersText2.setText(String.valueOf(survivors.getAmountOf("Commander")));
-        generalsText2.setText(String.valueOf(survivors.getAmountOf("General")));
-        zombiesText2.setText(String.valueOf(survivors.getAmountOf("Zombie")));
-        golliwogsText2.setText(String.valueOf(survivors.getAmountOf("Golliwog")));
-        volatilesText2.setText(String.valueOf(survivors.getAmountOf("Volatile")));
-        fightersText2.setText(String.valueOf(survivors.getAmountOf("Fighter")));
-        sheriffsText2.setText(String.valueOf(survivors.getAmountOf("Sheriff")));
-        chiefsText2.setText(String.valueOf(survivors.getAmountOf("Chief")));
+        clearWaterStation.setOnAction(actionEvent -> {
+            waterStation.removeAllUnits();
+            setAmountOfUnitsText(peacekeepers, waterStation, survivors);
+        });
+
+        clearSurvivors.setOnAction(actionEvent -> {
+            survivors.removeAllUnits();
+            setAmountOfUnitsText(peacekeepers, waterStation, survivors);
+        });
 
         addUnit.setOnAction(actionEvent -> {
+            Dialog<Pair<String, String>> dialog = new Dialog<>();
+            dialog.setTitle("Додавання мікрооб'єкту");
+            dialog.setHeaderText("Виберіть мікрооб'єкт який потрібно додати: ");
+
+            ButtonType loginButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            final ToggleGroup groupBase = new ToggleGroup();
+            final ToggleGroup groupType = new ToggleGroup();
+            RadioButton peacekeepersRadio = new RadioButton("Peacekeepers");
+            RadioButton waterstationRadio = new RadioButton("WaterStation");
+            RadioButton survivorsRadio = new RadioButton("Survivors");
+            peacekeepersRadio.setSelected(true);
+            peacekeepersRadio.setToggleGroup(groupBase);
+            waterstationRadio.setToggleGroup(groupBase);
+            survivorsRadio.setToggleGroup(groupBase);
+
+            RadioButton addSoldier = new RadioButton("Soldier");
+            RadioButton addCommander = new RadioButton("Commander");
+            RadioButton addGeneral = new RadioButton("General");
+            addSoldier.setSelected(true);
+            addSoldier.setToggleGroup(groupType);
+            addCommander.setToggleGroup(groupType);
+            addGeneral.setToggleGroup(groupType);
+
+            RadioButton addZombie = new RadioButton("Zombie");
+            RadioButton addGolliwog = new RadioButton("Golliwog");
+            RadioButton addVolatile = new RadioButton("Volatile");
+            addZombie.setToggleGroup(groupType);
+            addGolliwog.setToggleGroup(groupType);
+            addVolatile.setToggleGroup(groupType);
+
+            RadioButton addFighter = new RadioButton("Fighter");
+            RadioButton addSheriff = new RadioButton("Sheriff");
+            RadioButton addChief = new RadioButton("Chief");
+            addFighter.setToggleGroup(groupType);
+            addSheriff.setToggleGroup(groupType);
+            addChief.setToggleGroup(groupType);
+
+            grid.add(peacekeepersRadio, 0, 0);
+            grid.add(waterstationRadio, 1, 0);
+            grid.add(survivorsRadio, 2, 0);
+
+            grid.add(addSoldier, 0, 1);
+            grid.add(addCommander, 0, 2);
+            grid.add(addGeneral, 0, 3);
+
+            grid.add(addZombie, 1, 1);
+            grid.add(addGolliwog, 1, 2);
+            grid.add(addVolatile, 1, 3);
+
+            grid.add(addFighter, 2, 1);
+            grid.add(addSheriff, 2, 2);
+            grid.add(addChief, 2, 3);
+
+            dialog.getDialogPane().setContent(grid);
+
+            Optional<Pair<String, String>> result = dialog.showAndWait();
+
             if (peacekeepersRadio.isSelected()) {
                 if (addSoldier.isSelected()) {
                     peacekeepers.addUnit(new Soldier());
@@ -284,39 +295,41 @@ public class Controller {
                 if (addChief.isSelected()) {
                     survivors.addUnit(new Chief());
                 }
-
             }
-            soldiersText.setText(String.valueOf(peacekeepers.getAmountOf("Soldier")));
-            commandersText.setText(String.valueOf(peacekeepers.getAmountOf("Commander")));
-            generalsText.setText(String.valueOf(peacekeepers.getAmountOf("General")));
-            zombiesText.setText(String.valueOf(peacekeepers.getAmountOf("Zombie")));
-            golliwogsText.setText(String.valueOf(peacekeepers.getAmountOf("Golliwog")));
-            volatilesText.setText(String.valueOf(peacekeepers.getAmountOf("Volatile")));
-            fightersText.setText(String.valueOf(peacekeepers.getAmountOf("Fighter")));
-            sheriffsText.setText(String.valueOf(peacekeepers.getAmountOf("Sheriff")));
-            chiefsText.setText(String.valueOf(peacekeepers.getAmountOf("Chief")));
-
-            soldiersText1.setText(String.valueOf(waterStation.getAmountOf("Soldier")));
-            commandersText1.setText(String.valueOf(waterStation.getAmountOf("Commander")));
-            generalsText1.setText(String.valueOf(waterStation.getAmountOf("General")));
-            zombiesText1.setText(String.valueOf(waterStation.getAmountOf("Zombie")));
-            golliwogsText1.setText(String.valueOf(waterStation.getAmountOf("Golliwog")));
-            volatilesText1.setText(String.valueOf(waterStation.getAmountOf("Volatile")));
-            fightersText1.setText(String.valueOf(waterStation.getAmountOf("Fighter")));
-            sheriffsText1.setText(String.valueOf(waterStation.getAmountOf("Sheriff")));
-            chiefsText1.setText(String.valueOf(waterStation.getAmountOf("Chief")));
-
-            soldiersText2.setText(String.valueOf(survivors.getAmountOf("Soldier")));
-            commandersText2.setText(String.valueOf(survivors.getAmountOf("Commander")));
-            generalsText2.setText(String.valueOf(survivors.getAmountOf("General")));
-            zombiesText2.setText(String.valueOf(survivors.getAmountOf("Zombie")));
-            golliwogsText2.setText(String.valueOf(survivors.getAmountOf("Golliwog")));
-            volatilesText2.setText(String.valueOf(survivors.getAmountOf("Volatile")));
-            fightersText2.setText(String.valueOf(survivors.getAmountOf("Fighter")));
-            sheriffsText2.setText(String.valueOf(survivors.getAmountOf("Sheriff")));
-            chiefsText2.setText(String.valueOf(survivors.getAmountOf("Chief")));
+            setAmountOfUnitsText(peacekeepers, waterStation, survivors);
         });
 
     }
 
+    private void setAmountOfUnitsText(Peacekeepers peacekeepers, WaterStation waterStation, Survivors survivors) {
+        soldiersText.setText(String.valueOf(peacekeepers.getAmountOf("Soldier")));
+        commandersText.setText(String.valueOf(peacekeepers.getAmountOf("Commander")));
+        generalsText.setText(String.valueOf(peacekeepers.getAmountOf("General")));
+        zombiesText.setText(String.valueOf(peacekeepers.getAmountOf("Zombie")));
+        golliwogsText.setText(String.valueOf(peacekeepers.getAmountOf("Golliwog")));
+        volatilesText.setText(String.valueOf(peacekeepers.getAmountOf("Volatile")));
+        fightersText.setText(String.valueOf(peacekeepers.getAmountOf("Fighter")));
+        sheriffsText.setText(String.valueOf(peacekeepers.getAmountOf("Sheriff")));
+        chiefsText.setText(String.valueOf(peacekeepers.getAmountOf("Chief")));
+
+        soldiersText1.setText(String.valueOf(waterStation.getAmountOf("Soldier")));
+        commandersText1.setText(String.valueOf(waterStation.getAmountOf("Commander")));
+        generalsText1.setText(String.valueOf(waterStation.getAmountOf("General")));
+        zombiesText1.setText(String.valueOf(waterStation.getAmountOf("Zombie")));
+        golliwogsText1.setText(String.valueOf(waterStation.getAmountOf("Golliwog")));
+        volatilesText1.setText(String.valueOf(waterStation.getAmountOf("Volatile")));
+        fightersText1.setText(String.valueOf(waterStation.getAmountOf("Fighter")));
+        sheriffsText1.setText(String.valueOf(waterStation.getAmountOf("Sheriff")));
+        chiefsText1.setText(String.valueOf(waterStation.getAmountOf("Chief")));
+
+        soldiersText2.setText(String.valueOf(survivors.getAmountOf("Soldier")));
+        commandersText2.setText(String.valueOf(survivors.getAmountOf("Commander")));
+        generalsText2.setText(String.valueOf(survivors.getAmountOf("General")));
+        zombiesText2.setText(String.valueOf(survivors.getAmountOf("Zombie")));
+        golliwogsText2.setText(String.valueOf(survivors.getAmountOf("Golliwog")));
+        volatilesText2.setText(String.valueOf(survivors.getAmountOf("Volatile")));
+        fightersText2.setText(String.valueOf(survivors.getAmountOf("Fighter")));
+        sheriffsText2.setText(String.valueOf(survivors.getAmountOf("Sheriff")));
+        chiefsText2.setText(String.valueOf(survivors.getAmountOf("Chief")));
+    }
 }
